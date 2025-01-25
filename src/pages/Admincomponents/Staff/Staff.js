@@ -174,7 +174,7 @@ const Staff = () => {
     setform1(datal)
   }
 
-  const [listPerPage] = useState(20)
+  const [listPerPage] = useState(10)
   const [pageNumber, setPageNumber] = useState(0)
 
   const pagesVisited = pageNumber * listPerPage
@@ -484,7 +484,7 @@ const Staff = () => {
                         {lists.map((data, key) => (
                           <tr key={key} className="text-center">
                             <th scope="row">
-                              {(pageNumber - 1) * 20 + key + 21}
+                              {(pageNumber - 1) * 10 + key + 11}
                             </th>
                             <td>{data.name}</td>
                             <td>

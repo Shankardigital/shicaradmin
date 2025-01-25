@@ -42,14 +42,14 @@ const Productcat = () => {
   }
 
   // get all
-  const getAllCities = async () => {
+  const getSettings = async () => {
     const resonse = await addData("settings/getsettings")
     var _data = resonse
     setform1(_data.data.settings)
   }
 
   useEffect(() => {
-    getAllCities()
+    getSettings()
   }, [])
 
   const handleSubmit1 = async e => {
@@ -64,7 +64,7 @@ const Productcat = () => {
       console.log(_data)
       toast.success(_data.data.message)
       setmodal_small(false)
-      getAllCities()
+      getSettings()
     } catch (error) {
       if (
         error.response &&
@@ -113,7 +113,6 @@ const Productcat = () => {
                       </small>
                     </div>
                   </Col>
-
                   <Col md="3">
                     <div className="mb-3">
                       <Label for="basicpill-firstname-input1">
@@ -132,11 +131,10 @@ const Productcat = () => {
                         }}
                       />
                       <small className="text-danger">
-                        Single ride commission percentage
+                        Single ride commission percentage(%)
                       </small>
                     </div>
                   </Col>
-
                   <Col md="3">
                     <div className="mt-4">
                       <Button className="m-1" color="success" type="submit">

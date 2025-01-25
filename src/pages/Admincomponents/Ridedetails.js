@@ -50,11 +50,23 @@ import { editProfile, resetProfileFlag } from "../../store/actions"
 
 import { addData } from "Servicescalls"
 import { imgUrl } from "Baseurls"
+import Slider from "react-slick"
+import "slick-carousel/slick/slick.css"
+import "slick-carousel/slick/slick-theme.css"
 
 const Companyproductview = () => {
   const history = useHistory()
   //meta title
   //  document.title="Profile | CA Marketing - React Admin & Dashboard Template";
+
+  var settings = {
+    dots: true,
+    arrows: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  }
 
   const [modal, setmodal] = useState(false)
   const [form, setform] = useState([])
@@ -65,74 +77,44 @@ const Companyproductview = () => {
       setactiveTab(tab)
     }
   }
-  // const [activeTab1, setactiveTab1] = useState("1")
-  // const toggle1 = tab => {
-  //   if (activeTab1 !== tab) {
-  //     setactiveTab1(tab)
-  //   }
-  // }
+  const [activeTab1, setactiveTab1] = useState("1")
+  const toggle1 = tab => {
+    if (activeTab1 !== tab) {
+      setactiveTab1(tab)
+    }
+  }
 
   // get all
-  // const [cardData, setcardData] = useState([])
-  // const [cardData1, setcardData1] = useState([])
-  // console.log(cardData)
-  // const getByProduct = async () => {
-  //   const bodydata = {
-  //     id: sessionStorage.getItem("userdataid"),
-  //   }
-  //   const resonse = await addData(
-  //     "companyproduct/getcompanyproductbyid",
-  //     bodydata
-  //   )
-  //   var _data = resonse
-  //   setform(_data?.data?.product[0])
-  //   setcardData(
-  //     _data?.data?.product[0]?.unitsAndQrArray.filter(
-  //       data => data.isUsed == false
-  //     )
-  //   )
-  //   setcardData1(
-  //     _data?.data?.product[0]?.unitsAndQrArray.filter(
-  //       data => data.isUsed == true
-  //     )
-  //   )
-  // }
+  const [cardData, setcardData] = useState([])
+  const [cardData1, setcardData1] = useState([])
+  console.log(cardData1)
+  const [cardData2, setcardData2] = useState([])
+  const [cardData3, setcardData3] = useState([])
 
-  // useEffect(() => {
-  //   getByProduct()
-  // }, [])
+  const getByProduct = async () => {
+    const bodydata = {
+      rideId: sessionStorage.getItem("rideid"),
+    }
+    const resonse = await addData("rides/getRidesById", bodydata)
+    var _data = resonse
+    setform(_data?.data?.rides[0])
+    setcardData(_data?.data?.rides[0]?.carDetails)
+    setcardData1(_data?.data?.rides[0]?.driverDetails)
+    setcardData2(_data?.data?.rides[0]?.passengers)
+    setcardData3(_data?.data?.rides[0]?.waypoints)
+  }
 
-  // const cardData = Array.from({ length: 20 }, (_, index) => ({
-  //   id: `# PI2157${49 + index}`,
-  //   status: "Valid",
-  //   imgSrc:
-  //     "https://cdn.pixabay.com/photo/2013/07/12/14/45/qr-code-148732_1280.png",
-  // }))
-  // const cardData1 = Array.from({ length: 20 }, (_, index) => ({
-  //   id: `# PI2157${49 + index}`,
-  //   status: "Used",
-  //   imgSrc:
-  //     "https://cdn.pixabay.com/photo/2013/07/12/14/45/qr-code-148732_1280.png",
-  // }))
+  useEffect(() => {
+    getByProduct()
+  }, [])
 
-  // const [listPerPage] = useState(8)
-  // const [pageNumber, setPageNumber] = useState(0)
-
-  // const pagesVisited = pageNumber * listPerPage
-  // const lists = cardData.slice(pagesVisited, pagesVisited + listPerPage)
-  // const pageCount = Math.ceil(cardData.length / listPerPage)
-  // const changePage = ({ selected }) => {
-  //   setPageNumber(selected)
-  // }
-  // const [listPerPage1] = useState(8)
-  // const [pageNumber1, setPageNumber1] = useState(0)
-
-  // const pagesVisited1 = pageNumber1 * listPerPage1
-  // const lists1 = cardData1.slice(pagesVisited1, pagesVisited1 + listPerPage1)
-  // const pageCount1 = Math.ceil(cardData1.length / listPerPage1)
-  // const changePage1 = ({ selected }) => {
-  //   setPageNumber1(selected)
-  // }
+  const redirectuser = data => {
+    console.log(data)
+    sessionStorage.setItem("userdataid", data)
+   setTimeout(() => {
+    history.push("/users_details")
+   }, 1000);
+  }
 
   return (
     <React.Fragment>
@@ -165,25 +147,34 @@ const Companyproductview = () => {
                 <CardBody className="pt-0">
                   <Row>
                     <Col sm="12">
-                      <div className="profile-user-wid">
-                        <div className="text-center">
-                          <img
-                            style={{ width: "200px", width: "200px" }}
-                            src="https://imgd.aeplcdn.com/664x374/n/cw/ec/139651/curvv-exterior-right-front-three-quarter.jpeg?isig=0&q=80"
-                            // src={imgUrl + form.profilePic}
-                            alt=""
-                            className="img-thumbnail"
-                          />
-                        </div>
+                      <div
+                        className="profile-user-wid"
+                      >
+                        <Slider {...settings}>
+                          <div className="text-center">
+                            <img
+                              style={{ width: "100%", height: "180px" }}
+                              src={imgUrl + cardData?.carFrontImage}
+                              alt=""
+                              className="img-thumbnail"
+                            />
+                          </div>
+                          <div className="text-center">
+                            <img
+                              style={{ width: "100%", height: "180px" }}
+                              src={imgUrl + cardData?.carFrontImage}
+                              alt=""
+                              className="img-thumbnail"
+                            />
+                          </div>
+                        </Slider>
                       </div>
-                      <h5 className="font-size-15 text-center mt-1">
-                        # Tata Curvv
-                      </h5>
+
                       {/* <h5 className="font-size-15 text-center mt-1">
                         Coins: {form.coins}
                       </h5> */}
 
-                      <div className="mt-3">
+                      <div className="mt-4">
                         <h5>Vehicle Details</h5>
                       </div>
 
@@ -192,7 +183,7 @@ const Companyproductview = () => {
                           <span className="">Brand</span>
                         </div>
                         <div className="col col-7">
-                          <span>: Tata </span>
+                          <span>: {cardData.name} </span>
                         </div>
                       </Row>
                       <Row className="mb-3">
@@ -200,7 +191,7 @@ const Companyproductview = () => {
                           <span className="">Modal</span>
                         </div>
                         <div className="col col-7">
-                          <span>: Tata Curvv</span>
+                          <span>: {cardData.model}</span>
                         </div>
                       </Row>
                       <Row className="mb-3">
@@ -208,7 +199,7 @@ const Companyproductview = () => {
                           <span className="">Color</span>
                         </div>
                         <div className="col col-7">
-                          <span>: Gray</span>
+                          <span>: {cardData.colour}</span>
                           <br />
                         </div>
                       </Row>
@@ -217,7 +208,7 @@ const Companyproductview = () => {
                           <span className="">Seats</span>
                         </div>
                         <div className="col col-7">
-                          <span>: 5</span>
+                          <span>: {cardData.seats}</span>
                           <br />
                         </div>
                       </Row>
@@ -233,7 +224,7 @@ const Companyproductview = () => {
                           //     : "text-danger"
                           // }
                           >
-                            : Active
+                            : {cardData.status}
                           </span>
                           <br />
                         </div>
@@ -272,7 +263,7 @@ const Companyproductview = () => {
                             toggle("2")
                           }}
                         >
-                          Driver Details
+                          Published User
                         </NavLink>
                       </NavItem>
                       <NavItem className="border border-primary rounded p-1 m-1">
@@ -285,7 +276,7 @@ const Companyproductview = () => {
                             toggle("3")
                           }}
                         >
-                          User Details
+                          Passengers
                         </NavLink>
                       </NavItem>
                     </Nav>
@@ -293,18 +284,43 @@ const Companyproductview = () => {
 
                   <TabContent activeTab={activeTab} className="p-3 text-muted">
                     <TabPane tabId="1">
-                        <h6>Booking ID : # SC32465</h6>
-                        <h6>Date: 08/10/2024</h6>
-                        <h6>Time : 10:30 AM</h6>
-                        <h6>Price : ₹ 5000 /-</h6>
+                      <h6>Booking ID : # {form.bookingNo}</h6>
+                      <h6>Date: {form.rideStartDate}</h6>
+                      <h6>Time : {form.rideStartTime}</h6>
+                      <h6>Price : ₹ {form.fare} /-</h6>
+                      <h6>
+                        Ride Status :{" "}
+                        <b
+                          className={
+                            form.rideStatus == "completed"
+                              ? "text-success"
+                              : form.rideStatus == "cancelled"
+                              ? "text-danger"
+                              : "text-warning"
+                          }
+                        >
+                          {" "}
+                          {form.rideStatus}
+                        </b>{" "}
+                      </h6>
+                      {form.rideStatus == "cancelled"?(
+                      <h6>Reason : {form.cancellationReason}</h6>
+                      ):""}
+
                       <Row className="mt-2">
                         <Col md="6" className="mt-3">
                           <h6>
                             <b>Pick Up :-</b>
                           </h6>
                           <p>
-                            <b>Location</b>: Kukatpally Housing Board Colony,
-                            Hyderabad
+                            <b>Location</b>:{" "}
+                            <a
+                              href={`https://www.google.com/maps?q=${form?.pickupLocation?.coordinates[0]},${form?.pickupLocation?.coordinates[1]}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {form?.pickupLocation?.address}
+                            </a>
                           </p>
                         </Col>
                         <Col md="6" className="mt-3">
@@ -312,33 +328,33 @@ const Companyproductview = () => {
                             <b>Drop Off :-</b>
                           </h6>
                           <p>
-                            <b>Location</b>: Roadway in Visakhapatnam, Andhra
-                            Pradesh
+                            <b>Location</b>:{" "}
+                            <a
+                              href={`https://www.google.com/maps?q=${form?.dropoffLocation?.coordinates[0]},${form?.dropoffLocation?.coordinates[1]}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {form?.dropoffLocation?.address}
+                            </a>
                           </p>
                         </Col>
                       </Row>
                       <div>
-                      <h6>
-                            <b>Stop over cities :-</b>
-                          </h6>
-                          <p>
-                            <b>Location</b>: Kukatpally Housing Board Colony,
-                            Hyderabad
-                          </p>
-                          <p>
-                            <b>Location</b>: Kukatpally Housing Board Colony,
-                            Hyderabad
-                          </p>
-
-                          <p>
-                            <b>Location</b>: Kukatpally Housing Board Colony,
-                            Hyderabad
-                          </p>
-
-                          <p>
-                            <b>Location</b>: Kukatpally Housing Board Colony,
-                            Hyderabad
-                          </p>
+                        <h6>
+                          <b>Stop over cities :-</b>
+                        </h6>
+                        {cardData3.map((data, index) => (
+                         <p key={index}>
+                         <b>Location</b>:{" "}
+                         <a
+                           href={`https://www.google.com/maps?q=${data?.coordinates[0]},${data?.coordinates[1]}`}
+                           target="_blank"
+                           rel="noreferrer"
+                         >
+                           {data?.address}
+                         </a>
+                       </p>
+                        ))}
                       </div>
                     </TabPane>
                     <TabPane tabId="2">
@@ -350,55 +366,38 @@ const Companyproductview = () => {
                               <th>Name</th>
                               <th>Mobile Number</th>
                               <th>Image</th>
-                              <th>City</th>
+                              <th>Gender</th>
                               <th>Status</th>
                               <th>Action</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {/* {lists.map((data, key) => ( */}
                             <tr>
                               <td>1</td>
-                              <td>Senkar</td>
-                              <td>6954645565</td>
+                              <td>{cardData1.name}</td>
+                              <td>{cardData1.phone}</td>
                               <td>
                                 <img
                                   style={{ width: "100px", height: "70px" }}
-                                  src="https://icons.veryicon.com/png/o/miscellaneous/user-avatar/user-avatar-male-5.png"
+                                  src={imgUrl + cardData1.profilePic}
                                 />
                               </td>
-                              <td>Hyderabad</td>
-                              <td>Active</td>
+                              <td>{cardData1.gender}</td>
+                              <td>{cardData1.status}</td>
                               <td>
-                                <Link to="/users_details">
-                                  <Button outline color="warning">
-                                    <i className="bx bx-show"></i>
-                                  </Button>
-                                </Link>
+                                <Button
+                                  onClick={() => {
+                                    redirectuser(cardData1._id)
+                                  }}
+                                  outline
+                                  color="warning"
+                                >
+                                  <i className="bx bx-show"></i>
+                                </Button>
                               </td>
                             </tr>
-                            {/* ))} */}
                           </tbody>
                         </Table>
-                        <Col sm="12">
-                          {/* <div
-                            className="d-flex mt-3 mb-1"
-                            style={{ float: "right" }}
-                          >
-                            <ReactPaginate
-                              previousLabel={"Previous"}
-                              nextLabel={"Next"}
-                              pageCount={pageCount}
-                              onPageChange={changePage}
-                              containerClassName={"pagination"}
-                              previousLinkClassName={"previousBttn"}
-                              nextLinkClassName={"nextBttn"}
-                              disabledClassName={"disabled"}
-                              activeClassName={"active"}
-                              total={lists.length}
-                            />
-                          </div> */}
-                        </Col>
                       </div>
                     </TabPane>
                     <TabPane tabId="3">
@@ -410,75 +409,40 @@ const Companyproductview = () => {
                               <th>Name</th>
                               <th>Mobile Number</th>
                               <th>Image</th>
-                              <th>City</th>
+                              <th>Gender</th>
                               <th>Status</th>
                               <th>Action</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {/* {lists.map((data, key) => ( */}
-                            <tr>
-                              <td>1</td>
-                              <td>Shiva</td>
-                              <td>9654645565</td>
-                              <td>
-                                <img
-                                  style={{ width: "100px", height: "70px" }}
-                                  src="https://icons.veryicon.com/png/o/miscellaneous/user-avatar/user-avatar-male-5.png"
-                                />
-                              </td>
-                              <td>Hyderabad</td>
-                              <td>Active</td>
-                              <td>
-                                <Link to="/users_details">
-                                  <Button outline color="warning">
+                            {cardData2.map((data, index) => (
+                              <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td>{data.name}</td>
+                                <td>{data.phone}</td>
+                                <td>
+                                  <img
+                                    style={{ width: "100px", height: "70px" }}
+                                    src={imgUrl + data.profilePic}
+                                  />
+                                </td>
+                                <td>{data.gender}</td>
+                                <td>{data.status}</td>
+                                <td>
+                                  <Button
+                                    onClick={() => {
+                                      redirectuser(data._id)
+                                    }}
+                                    outline
+                                    color="warning"
+                                  >
                                     <i className="bx bx-show"></i>
                                   </Button>
-                                </Link>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>2</td>
-                              <td>Mani</td>
-                              <td>8654645565</td>
-                              <td>
-                                <img
-                                  style={{ width: "100px", height: "70px" }}
-                                  src="https://icons.veryicon.com/png/o/miscellaneous/user-avatar/user-avatar-male-5.png"
-                                />
-                              </td>
-                              <td>Hyderabad</td>
-                              <td>Active</td>
-                              <td>
-                                <Link to="/users_details">
-                                  <Button outline color="warning">
-                                    <i className="bx bx-show"></i>
-                                  </Button>
-                                </Link>
-                              </td>
-                            </tr>
-                            {/* ))} */}
+                                </td>
+                              </tr>
+                            ))}
                           </tbody>
                         </Table>
-                        <Col sm="12">
-                          {/* <div
-                            className="d-flex mt-3 mb-1"
-                            style={{ float: "right" }}
-                          >
-                            <ReactPaginate
-                              previousLabel={"Previous"}
-                              nextLabel={"Next"}
-                              pageCount={pageCount1}
-                              onPageChange={changePage1}
-                              containerClassName={"pagination"}
-                              previousLinkClassName={"previousBttn"}
-                              nextLinkClassName={"nextBttn"}
-                              disabledClassName={"disabled"}
-                              activeClassName={"active"}
-                              total={lists1.length}
-                            />
-                          </div> */}
-                        </Col>
                       </div>
                     </TabPane>
                   </TabContent>

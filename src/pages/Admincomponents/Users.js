@@ -35,26 +35,34 @@ import { imgUrl } from "Baseurls"
 const Users = () => {
 
   const history = useHistory()
-  const [agents, setAgents] = useState([{
-    name:"shanker",
-    profilePic:"https://png.pngtree.com/png-clipart/20231019/original/pngtree-user-profile-avatar-png-image_13369988.png",
-    email:"shanker@gmail.com",
-    mobileNumber:564866533,
-    status:"active"
-  }])
+  const [agents, setAgents] = useState([])
+  // const [agents, setAgents] = useState([{
+  //   name:"shanker",
+  //   profilePic:"https://png.pngtree.com/png-clipart/20231019/original/pngtree-user-profile-avatar-png-image_13369988.png",
+  //   email:"shanker@gmail.com",
+  //   mobileNumber:564866533,
+  //   status:"active"
+  // }])
 
   // get all
-  // const getAllAgents = async () => {
-  //   const resonse = await addData("user/getallactiveusers")
-  //   var _data = resonse
-  //   setAgents(_data?.data?.user)
-  // }
+  const getAllAgents = async () => {
+    const bodydata ={
+      userDocumentStatus: "approved"
+    }
+    const resonse = await addData("users/getallactiveusers", bodydata)
+    var _data = resonse
+    setAgents(_data?.data?.user)
+  }
 
   // search fuctions
   const agentSearch = async e => {
-    const resonse = await addData("user/getallactiveusers?searchQuery=" + e.target.value)
+    const bodydata ={
+      userDocumentStatus: "approved"
+    }
+    const resonse = await addData("users/getallactiveusers?searchQuery=" + e.target.value, bodydata)
     var _data = resonse
     setAgents(_data?.data?.user)
+    setPageNumber(0)
   }
 
   const getByfunction = (data) => {
@@ -63,7 +71,7 @@ const Users = () => {
   }
 
   useEffect(() => {
-    // getAllAgents()
+    getAllAgents()
   }, [])
 
   const [listPerPage] = useState(10)
@@ -81,7 +89,7 @@ const Users = () => {
     <React.Fragment>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Shicar" breadcrumbItem="Users" />
+          <Breadcrumbs title="Shicar" breadcrumbItem="Active Users" />
           {/* {permissioins.customerView === true || roles === "admin" ? ( */}
 
           <Row>
@@ -117,9 +125,11 @@ const Users = () => {
                       <thead>
                         <tr>
                           <th>Sl No</th>
+                          <th>Date & Time</th>
+                          <th>User Id</th>
                           <th>Name</th>
                           <th>Image</th>
-                          <th>Email</th>
+                          {/* <th>Email</th> */}
                           <th>Mobile No</th>
                            <th>Wallet</th>
                           <th>Status</th>
@@ -134,14 +144,16 @@ const Users = () => {
                         ):(<>
                          {lists.map((data, key) => ( 
                           <tr key={key} >
-                            <td> {(pageNumber - 1) * 5 + key + 6}</td>
+                            <td> {(pageNumber - 1) * 10 + key + 11}</td>
+                            <td>{data.logCreatedDate.slice(0, 10)}, {data.logCreatedDate.slice(12, 16)}</td>
+                            <td>{data.userUniqueId}</td>
                             <td>{data.name}</td>
                             <td>
-                              <img src={data.profilePic} style={{height:"75px", width:"100px"}} />
+                              <img src={imgUrl + data.profilePic} style={{height:"75px", width:"100px"}} />
                             </td>
-                            <td>{data.email}</td>
-                            <td>{data.mobileNumber}</td>
-                           <td>₹ 500</td> 
+                            {/* <td>{data.email}</td> */}
+                            <td>{data.phone}</td>
+                           <td>₹ {data.wallet}</td> 
                             <td className="text-success"><b>{data.status}</b></td>
 
                        

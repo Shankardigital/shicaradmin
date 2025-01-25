@@ -31,6 +31,8 @@ import { addData } from "Servicescalls"
 import { imgUrl } from "Baseurls"
 // import barcode from "../../assets/images/letast/barcode.jpg"
 // import Barcode from "react-barcode";
+import { format } from "date-fns"
+import Flatpickr from "react-flatpickr"
 
 const Usertranscation = () => {
   const history = useHistory()
@@ -87,36 +89,44 @@ const Usertranscation = () => {
     setfilter(!filter)
   }
 
-  const [form, setform] = useState({ fromDate: "", toDate: "" })
+
   const [form1, setform1] = useState([])
 
-  const handleChange = e => {
-    const myData = { ...form }
-    myData[e.target.name] = e.target.value
-    setform(myData)
-  }
   const handleChange1 = e => {
     const myData = { ...form1 }
     myData[e.target.name] = e.target.value
     setform1(myData)
   }
 
+  const [dates, setDates] = useState("")
+  const [dates1, setDates1] = useState("")
+
+  const handleDateChange = async NewDate => {
+    if (NewDate.length === 0) {
+    } else {
+      const date1 = format(new Date(NewDate[0]), "yyyy-MM-dd")
+      const date2 = format(new Date(NewDate[1]), "yyyy-MM-dd")
+      // const newDates = [date1, date2];
+      setDates(date1)
+      setDates1(date2)
+    }
+  }
+
   const filterSubmit = async e => {
     e.preventDefault()
     const bodydata = {
       status: "requested",
-      fromDate: form.fromDate,
-      toDate: form.toDate,
+      startDate: dates,
+      endDate: dates1,
     }
     const resonse = await addData("getalluserwithdraws", bodydata)
     var _data = resonse
     setAgents(_data?.data?.userWithdrawrequests)
-    setform({ fromDate: "", toDate: "" })
     popup()
   }
 
   const modalopen = data => {
-    setform1(data)
+
     setmodal(true)
   }
 
@@ -169,28 +179,20 @@ const Usertranscation = () => {
                       }}
                     >
                       <Row>
-                        <Col md="3">
-                          <Label>From Date</Label>
-                          <Input
-                            type="date"
-                            name="fromDate"
+                      <Col md="3">
+                          <Label>Date</Label>
+                          <Flatpickr
+                            placeholder="Select date"
+                            className="form-control"
+                            name="date"
                             onChange={e => {
-                              handleChange(e)
+                              handleDateChange(e)
                             }}
-                            value={form.fromDate}
-                            max={new Date().toISOString().split("T")[0]}
-                          />
-                        </Col>
-                        <Col md="3">
-                          <Label>To Date</Label>
-                          <Input
-                            type="date"
-                            name="toDate"
-                            onChange={e => {
-                              handleChange(e)
+                            options={{
+                              mode: "range",
+                              dateFormat: "d M, Y",
+                              maxDate: new Date(),
                             }}
-                            value={form.toDate}
-                            max={new Date().toISOString().split("T")[0]}
                           />
                         </Col>
                         <Col md="3" className="mt-3 pt-1">

@@ -39,9 +39,9 @@ const Users = () => {
   // get all
   const getAllAgents = async () => {
     const bodydata = {
-      rideStatus: "cancelled",
+      status: "completed",
     }
-    const resonse = await addData("rides/getRidesByStatus", bodydata)
+    const resonse = await addData("rides/getBookingsByStatus", bodydata)
     var _data = resonse
     setAgents(_data?.data?.rides)
   }
@@ -49,10 +49,10 @@ const Users = () => {
   // search fuctions
   const agentSearch = async e => {
     const bodydata = {
-      rideStatus: "cancelled",
+      status: "completed",
     }
     const resonse = await addData(
-      "rides/getRidesByStatus?searchQuery=" + e.target.value,
+      "rides/getBookingsByStatus?searchQuery=" + e.target.value,
       bodydata
     )
     var _data = resonse
@@ -73,7 +73,7 @@ const Users = () => {
     setPageNumber(selected)
   }
   const redirectBooking = data => {
-    sessionStorage.setItem("rideid", data._id)
+    sessionStorage.setItem("rideid", data.rideId)
     history.push("/ridedetails")
   }
 
@@ -81,7 +81,7 @@ const Users = () => {
     <React.Fragment>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Shicar" breadcrumbItem="Cancelled Rides" />
+          <Breadcrumbs title="Shicar" breadcrumbItem="Booked Rides" />
           {/* {permissioins.customerView === true || roles === "admin" ? ( */}
 
           <Row>
@@ -112,16 +112,17 @@ const Users = () => {
                     </Col>
                   </Row>
 
-                  <div className="table-rep-plugin mt-4">
+                  <div className="table-rep-plugin table-responsive mt-4">
                     <Table hover bordered responsive>
                       <thead>
                         <tr>
                           <th>Sl No</th>
-                          <th>Date & Time</th>
+                          <th style={{width:'150px'}}>Date & Time</th>
                           <th>Pick Up</th>
                           <th>Drop Off</th>
                           <th>Published User</th>
                           <th>Mobile</th>
+                          <th>Gender</th>
                           <th>Status</th>
                           <th>Action</th>
                         </tr>
@@ -138,12 +139,14 @@ const Users = () => {
                             {lists.map((data, key) => (
                               <tr key={key} >
                                 <td>{(pageNumber - 1) * 10 + key + 11}</td>
-                                <td>{data.rideStartDate}<br/>{data.rideStartTime}</td>
-                                <td>{data?.pickupLocation?.address}</td>
-                                <td>{data?.dropoffLocation?.address}</td>
-                                <td>{data.driverName}</td>
-                                <td>{data.driverPhone}</td>
-                                <td className="text-danger">{data.rideStatus}</td>
+                                <td>{data?.rideDetails?.rideStartDate}<br/>{data?.rideDetails?.rideStartTime}</td>
+                                <td>{data?.rideDetails?.pickupLocation?.address}</td>
+                                <td>{data?.rideDetails?.dropoffLocation?.address}</td>
+                                <td>{data?.passengers?.name}</td>
+                                <td>{data?.passengers?.phone}</td>
+                                <td>{data?.passengers?.gender}</td>
+
+                                <td className="text-warning">{data.rideStatus}</td>
                                 <td>
                                   <Button
                                     size="sm"
@@ -190,7 +193,6 @@ const Users = () => {
               </Card>
             </Col>
           </Row>
-
         </div>
         <Toaster />
       </div>

@@ -1,31 +1,39 @@
-import PropTypes from "prop-types";
-import React, {useState } from "react";
+import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
 
-import { Row, Col, CardBody, Card, Alert, Container, Form, Input, FormFeedback, Label } from "reactstrap";
+import {
+  Row,
+  Col,
+  CardBody,
+  Card,
+  Alert,
+  Container,
+  Form,
+  Input,
+  FormFeedback,
+  Label,
+} from "reactstrap"
 
 //redux
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux"
 
-import { withRouter, Link } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom"
 
 // Formik validation
-import * as Yup from "yup";
-import { useFormik } from "formik";
+import * as Yup from "yup"
+import { useFormik } from "formik"
 
 //Social Media Imports
-import { GoogleLogin } from "react-google-login";
+import { GoogleLogin } from "react-google-login"
 // import TwitterLogin from "react-twitter-auth"
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props"
 
 // actions
-import { loginUser, socialLogin } from "../../store/actions";
+import { loginUser, socialLogin } from "../../store/actions"
 
 // import images
-import profile from "assets/images/profile-img.png";
-import logo from "assets/images/logo.png";
-
-//Import config
-import { facebook, google } from "../../config";
+import profile from "assets/images/profile-img.png"
+import logo from "assets/images/logo.png"
 
 const Login = props => {
   //meta title
@@ -90,7 +98,6 @@ const Login = props => {
 
   const [passwordType, setPasswordType] = useState("password")
 
-
   const togglePassword = () => {
     if (passwordType === "password") {
       setPasswordType("text")
@@ -116,9 +123,7 @@ const Login = props => {
                   <Row>
                     <Col xs={7}>
                       <div className="text-primary p-4">
-                        <h5 className="text-primary">
-                          Welcome To Shicar
-                        </h5>
+                        <h5 className="text-primary">Welcome To Shicar</h5>
                         {/* <p>Sign in to continue to Logic Cars Super Admin.</p> */}
                       </div>
                     </Col>
@@ -201,25 +206,25 @@ const Login = props => {
                               {validation.errors.password}
                             </FormFeedback>
                           ) : null}
-                     
-                        <div className="input-group-btn">
-                          <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={() => {
-                              togglePassword()
-                            }}
-                          >
-                            {passwordType === "password" ? (
-                              <i
-                                className="fa fa-eye-slash"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <i className="fa fa-eye" aria-hidden="true" />
-                            )}
-                          </button>
-                        </div>   </div>
+                          <div className="input-group-btn">
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              onClick={() => {
+                                togglePassword()
+                              }}
+                            >
+                              {passwordType === "password" ? (
+                                <i
+                                  className="fa fa-eye-slash"
+                                  aria-hidden="true"
+                                />
+                              ) : (
+                                <i className="fa fa-eye" aria-hidden="true" />
+                              )}
+                            </button>
+                          </div>{" "}
+                        </div>
                       </div>
 
                       {/* <div className="form-check">
@@ -324,8 +329,12 @@ const Login = props => {
                   </Link>{" "}
                 </p> */}
                 <p>
-                  © {new Date().getFullYear()} Shicar. Design & Develop <i className="mdi mdi-heart text-danger" /> by 
-                  <a href="https://www.digitalraiz.com/"> Digitalraiz Creative Solutions Pvt Ltd.</a>
+                  © {new Date().getFullYear()} Shicar. Design & Develop{" "}
+                  <i className="mdi mdi-heart text-danger" /> by
+                  <a href="https://www.digitalraiz.com/">
+                    {" "}
+                    Digitalraiz Creative Solutions Pvt Ltd.
+                  </a>
                 </p>
               </div>
             </Col>
@@ -336,8 +345,8 @@ const Login = props => {
   )
 }
 
-export default withRouter(Login);
+export default withRouter(Login)
 
 Login.propTypes = {
   history: PropTypes.object,
-};
+}

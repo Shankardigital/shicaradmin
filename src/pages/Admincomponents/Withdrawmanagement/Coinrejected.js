@@ -31,33 +31,35 @@ import { addData } from "Servicescalls"
 import { imgUrl } from "Baseurls"
 // import barcode from "../../assets/images/letast/barcode.jpg"
 // import Barcode from "react-barcode";
+import { format } from "date-fns"
+import Flatpickr from "react-flatpickr"
 
 const Coinsrequest = () => {
   const history = useHistory()
   const [agents, setAgents] = useState([])
-  const [modal, setmodal] = useState(false)
-
   // get all
   const getAlldata = async () => {
     const bodydata = {
-      status: "rejected",
+      transactionStatus: "rejected",
     }
-    const resonse = await addData("getalluserwithdraws", bodydata)
+    const resonse = await addData("wallet/getAllWallets", bodydata)
     var _data = resonse
-    setAgents(_data?.data?.userWithdrawrequests)
+    setAgents(_data?.data?.data)
+    setPageNumber(0)
+    setfilter(false)
   }
 
   // search fuctions
   const Searchfunction = async e => {
     const bodydata = {
-      status: "rejected",
+      transactionStatus: "rejected",
     }
     const resonse = await addData(
-      "getalluserwithdraws?searchQuery=" + e.target.value,
+      "wallet/getAllWallets?searchQuery=" + e.target.value,
       bodydata
     )
     var _data = resonse
-    setAgents(_data?.data?.userWithdrawrequests)
+    setAgents(_data?.data?.data)
   }
 
   useEffect(() => {
@@ -80,69 +82,35 @@ const Coinsrequest = () => {
     setfilter(!filter)
   }
 
-  const [form, setform] = useState({ fromDate: "", toDate: "" })
-  const [form1, setform1] = useState([])
 
-  const handleChange = e => {
-    const myData = { ...form }
-    myData[e.target.name] = e.target.value
-    setform(myData)
-  }
-  const handleChange1 = e => {
-    const myData = { ...form1 }
-    myData[e.target.name] = e.target.value
-    setform1(myData)
+  const [dates, setDates] = useState("")
+  const [dates1, setDates1] = useState("")
+
+  const handleDateChange = async NewDate => {
+    if (NewDate.length === 0) {
+    } else {
+      const date1 = format(new Date(NewDate[0]), "yyyy-MM-dd")
+      const date2 = format(new Date(NewDate[1]), "yyyy-MM-dd")
+      // const newDates = [date1, date2];
+      setDates(date1)
+      setDates1(date2)
+    }
   }
 
   const filterSubmit = async e => {
     e.preventDefault()
     const bodydata = {
-      status: "rejected",
-      fromDate: form.fromDate,
-      toDate: form.toDate,
+      transactionStatus: "rejected",
+      startDate: dates,
+      endDate: dates1,
     }
-    const resonse = await addData("getalluserwithdraws", bodydata)
+    const resonse = await addData("wallet/getAllWallets", bodydata)
     var _data = resonse
-    setAgents(_data?.data?.userWithdrawrequests)
-    setform({ fromDate: "", toDate: "" })
+    setAgents(_data?.data?.data)
+    setPageNumber(0)
     popup()
   }
 
-  const modalopen = data => {
-    setform1(data)
-    setmodal(true)
-  }
-
-  const handleSubmitform = async e => {
-    e.preventDefault()
-    const bodydata = {
-      status: form1.status,
-      transactionId: form1.transactionId,
-      description: form1.description,
-      rejectedReason: form1.rejectedReason,
-    }
-    try {
-      const resonse = await updateData(
-        "updatewithdrawrequest/" + form1._id,
-        bodydata
-      )
-      var _data = resonse
-      console.log(_data)
-      toast.success(_data.data.message)
-      setmodal(false)
-      getAlldata()
-    } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        toast.error(error.response.data.message)
-      } else {
-        // toast.error("An error occurred. Please try again.")
-      }
-    }
-  }
 
   return (
     <React.Fragment>
@@ -163,29 +131,22 @@ const Coinsrequest = () => {
                     >
                       <Row>
                         <Col md="3">
-                          <Label>From Date</Label>
-                          <Input
-                            type="date"
-                            name="fromDate"
-                            onChange={e => {
-                              handleChange(e)
-                            }}
-                            value={form.fromDate}
-                            max={new Date().toISOString().split("T")[0]}
-                          />
+                        <Label>Date</Label>
+                                               <Flatpickr
+                                                 placeholder="Select date"
+                                                 className="form-control"
+                                                 name="date"
+                                                 onChange={e => {
+                                                   handleDateChange(e)
+                                                 }}
+                                                 options={{
+                                                   mode: "range",
+                                                   dateFormat: "d M, Y",
+                                                   maxDate: new Date(),
+                                                 }}
+                                               />
                         </Col>
-                        <Col md="3">
-                          <Label>To Date</Label>
-                          <Input
-                            type="date"
-                            name="toDate"
-                            onChange={e => {
-                              handleChange(e)
-                            }}
-                            value={form.toDate}
-                            max={new Date().toISOString().split("T")[0]}
-                          />
-                        </Col>
+                        
                         <Col md="3" className="mt-3 pt-1">
                           <Button type="submit" color="success" className="m-2">
                             Submit <i className="bx bx-check-circle" />
@@ -274,34 +235,18 @@ const Coinsrequest = () => {
                           <>
                             {lists.map((data, key) => (
                               <tr key={key}>
-                                <td> {(pageNumber - 1) * 5 + key + 6}</td>
+                                <td> {(pageNumber - 1) * 10 + key + 11}</td>
                                 <td>
                                   {data.date} ({data.time})
                                 </td>
                                 <td>{data.userName}</td>
-                                <td>{data.userMobileNumber}</td>
+                                <td>{data.phone}</td>
 
                                 {/* <td>{data.points}</td> */}
-                                <td>{data.amount}</td>
-                                <td>{data.rejectedReason}</td>
-                                <td className="text-danger">{data.status}</td>
-                                {/* <td>
-                                  <Button
-                                    onClick={() => {
-                                      modalopen(data)
-                                    }}
-                                    size="sm"
-                                    className="m-1"
-                                    outline
-                                    color="success"
-                                  >
-                                    <i
-                                      style={{ fontSize: " 14px" }}
-                                      className="bx bx-edit"
-                                    ></i>{" "}
-                                    Update
-                                  </Button>
-                                </td> */}
+                                <td>₹ {data.amount}</td>
+                                <td>{data.reason}</td>
+                                <td className="text-danger">{data.transactionStatus}</td>
+                              
                               </tr>
                             ))}
                           </>
@@ -334,136 +279,7 @@ const Coinsrequest = () => {
           </Row>
         </div>
         <Toaster />
-        <Modal
-          isOpen={modal}
-          role="dialog"
-          // size="sm"
-          autoFocus={true}
-          centered
-          data-toggle="modal"
-          toggle={() => {
-            setmodal(!modal)
-          }}
-        >
-          <div className="modal-header">
-            <h5 className="modal-title mt-0" id="mySmallModalLabel">
-              Update Status
-            </h5>
-            <button
-              onClick={() => {
-                setmodal(!modal)
-              }}
-              type="button"
-              className="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div className="modal-body">
-            <Form
-              onSubmit={e => {
-                handleSubmitform(e)
-              }}
-            >
-              <div className="mb-3">
-                <Label for="basicpill-firstname-input3">
-                  Status <span className="text-danger">*</span>
-                </Label>
-                <select
-                  name="status"
-                  value={form1.status}
-                  onChange={e => {
-                    handleChange1(e)
-                  }}
-                  className="form-select"
-                >
-                  <option value="">Select Status</option>
-                  <option value="requested">Requested</option>
-                  <option value="hold">Hold</option>
-                  <option value="approved">Approved</option>
-                  <option value="rejected">Rejected</option>
-                </select>
-              </div>
-              {form1.status == "approved" ? (
-                <>
-                  <div className="mb-3">
-                    <Label for="basicpill-firstname-input1">
-                      Transactions Id <span className="text-danger">*</span>
-                    </Label>
-                    <Input
-                      type="text"
-                      className="form-control"
-                      id="basicpill-firstname-input1"
-                      placeholder="Enter Transactions Id"
-                      required
-                      name="transactionId"
-                      value={form1.transactionId}
-                      onChange={e => {
-                        handleChange1(e)
-                      }}
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <Label for="basicpill-firstname-input1">
-                      Description <span className="text-danger">*</span>
-                    </Label>
-                    <textarea
-                      type="text"
-                      className="form-control"
-                      id="basicpill-firstname-input1"
-                      placeholder="Enter Description"
-                      required
-                      name="description"
-                      value={form1.description}
-                      onChange={e => {
-                        handleChange1(e)
-                      }}
-                    />
-                  </div>
-                </>
-              ) : form1.status == "rejected" ? (
-                <div className="mb-3">
-                  <Label for="basicpill-firstname-input1">
-                    Reason <span className="text-danger">*</span>
-                  </Label>
-                  <textarea
-                    type="text"
-                    className="form-control"
-                    id="basicpill-firstname-input1"
-                    placeholder="Enter Reason"
-                    required
-                    name="rejectedReason"
-                    value={form1.rejectedReason}
-                    onChange={e => {
-                      handleChange1(e)
-                    }}
-                  />
-                </div>
-              ) : (
-                ""
-              )}
-
-              <div style={{ float: "right" }}>
-              <Button className="m-1" color="success" type="submit">
-                  Submit <i className="fas fa-check-circle"></i>
-                </Button>
-                <Button
-                  onClick={() => {
-                    setmodal(!modal)
-                  }}
-                  color="danger"
-                  type="button"
-                >
-                  Cancel <i className="fas fa-times-circle"></i>
-                </Button>
-              
-              </div>
-            </Form>
-          </div>
-        </Modal>
+   
       </div>
     </React.Fragment>
   )

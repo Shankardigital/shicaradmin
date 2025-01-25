@@ -17,10 +17,14 @@ const UserProfile = lazy(() => import("../pages/Authentication/user-profile"));
 const Users = lazy(() => import("pages/Admincomponents/Users"));
 const Runningrides = lazy(() => import("pages/Admincomponents/Runningrides"));
 const Requstedusers = lazy(() => import("pages/Admincomponents/Requstedusers"));
+const Bookingrides = lazy(() => import("pages/Admincomponents/Bookingrides"));
 const Approvedusers = lazy(() => import("pages/Admincomponents/Approvedusers"));
 const Rejectedusers = lazy(() => import("pages/Admincomponents/Rejectedusers"));
 const Inactiveusers = lazy(() => import("pages/Admincomponents/Inactiveusers"));
 const Userdetails = lazy(() => import("pages/Admincomponents/Userdetails"));
+const Pendingusers = lazy(() => import("pages/Admincomponents/Pendingusers"));
+const Rejecteduser = lazy(() => import("pages/Admincomponents/Rejecteduser"));
+
 const Customers = lazy(() => import("pages/Admincomponents/Customers"));
 const Banner = lazy(() => import("pages/Admincomponents/Event"));
 const Banners = lazy(() => import("pages/Admincomponents/Banners"));
@@ -61,6 +65,9 @@ const Usertranscation = lazy(() => import("pages/Admincomponents/Usertranscation
 const Admintransaction = lazy(() => import("pages/Admincomponents/Admintransaction"));
 const Ticketrise = lazy(() => import("pages/Admincomponents/Ticketrise"));
 const Chat = lazy(() => import("pages/Admincomponents/Chat"));
+const Promocode = lazy(() => import("pages/Admincomponents/Promocode"));
+const Notifications = lazy(() => import("pages/Admincomponents/Notifications"));
+const Deleteaccount = lazy(() => import("pages/Admincomponents/Deleteaccount"));
 
 
 const authProtectedRoutes = [
@@ -68,12 +75,15 @@ const authProtectedRoutes = [
   
   { path: "/users", component: Users },
   { path: "/blockedusers", component: Inactiveusers },
+  { path: "/requestedusers", component: Pendingusers },
+  { path: "/rejectedusers", component: Rejecteduser },
   { path: "/users_details", component: Userdetails },
   { path: "/users_transaction", component: Usertranscation },
   { path: "/admin_transaction", component: Admintransaction },
 
   { path: "/runningrides", component: Runningrides },
   { path: "/pendingrides", component: Requstedusers },
+  { path: "/bookedrides", component: Bookingrides },
   { path: "/completedrides", component: Approvedusers },
   { path: "/cancelledrides", component: Rejectedusers },
 
@@ -112,6 +122,8 @@ const authProtectedRoutes = [
   { path: "/coinsvalue", component: Coinsvalue },
   { path: "/ticketrise", component: Ticketrise },
   { path: "/chat", component: Chat },
+  { path: "/promocode", component: Promocode },
+  { path: "/notifications", component: Notifications },
 
   { path: "/", exact: true, component: () => <Redirect to="/login" /> }
 ];
@@ -122,7 +134,8 @@ const publicRoutes = [
   { path: "/forgot-password", component: ForgetPwd },
   { path: "/register", component: Register },
   { path: "/otp", component: Otp },
-  { path: "/setpassword", component: Setpwd }
+  { path: "/setpassword", component: Setpwd },
+  { path: "/delete-account", component: Deleteaccount }
 ];
 
 export { publicRoutes, authProtectedRoutes };

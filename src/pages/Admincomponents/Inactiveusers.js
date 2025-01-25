@@ -35,26 +35,27 @@ import { imgUrl } from "Baseurls"
 const Users = () => {
 
   const history = useHistory()
-  const [agents, setAgents] = useState([
-    {
-      name:"shanker",
-      profilePic:"https://png.pngtree.com/png-clipart/20231019/original/pngtree-user-profile-avatar-png-image_13369988.png",
-      email:"shanker@gmail.com",
-      mobileNumber:564866533,
-      status:"inactive"
-    }
-  ])
+  const [agents, setAgents] = useState([])
+  // const [agents, setAgents] = useState([
+  //   {
+  //     name:"shanker",
+  //     profilePic:"https://png.pngtree.com/png-clipart/20231019/original/pngtree-user-profile-avatar-png-image_13369988.png",
+  //     email:"shanker@gmail.com",
+  //     mobileNumber:564866533,
+  //     status:"inactive"
+  //   }
+  // ])
 
   // get all
-  // const getAllAgents = async () => {
-  //   const resonse = await addData("user/getallinactiveusers")
-  //   var _data = resonse
-  //   setAgents(_data?.data?.user)
-  // }
+  const getAllAgents = async () => {
+    const resonse = await addData("users/getallinactiveusers")
+    var _data = resonse
+    setAgents(_data?.data?.user)
+  }
 
   // search fuctions
   const agentSearch = async e => {
-    const resonse = await addData("user/getallinactiveusers?searchQuery=" + e.target.value)
+    const resonse = await addData("users/getallinactiveusers?searchQuery=" + e.target.value)
     var _data = resonse
     setAgents(_data?.data?.user)
   }
@@ -65,7 +66,7 @@ const Users = () => {
   }
 
   useEffect(() => {
-    // getAllAgents()
+    getAllAgents()
   }, [])
 
   const [listPerPage] = useState(10)
@@ -119,9 +120,11 @@ const Users = () => {
                       <thead>
                         <tr>
                           <th>Sl No</th>
+                          <th>Date & Time</th>
+                          <th>User Id</th>
                           <th>Name</th>
                           <th>Image</th>
-                          <th>Email</th>
+                          {/* <th>Email</th> */}
                           <th>Mobile No</th>
                           {/* <th>Password</th>
                           <th>Designation</th> */}
@@ -138,13 +141,15 @@ const Users = () => {
                         ):(<>
                          {lists.map((data, key) => ( 
                           <tr key={key} >
-                            <td> {(pageNumber - 1) * 5 + key + 6}</td>
+                            <td> {(pageNumber - 1) * 10 + key + 11}</td>
+                            <td>{data.logCreatedDate.slice(0, 10)}, {data.logCreatedDate.slice(12, 16)}</td>
+                            <td>{data.userUniqueId}</td>
                             <td>{data.name}</td>
                             <td>
-                              <img src={data.profilePic} style={{height:"75px", width:"100px"}} />
+                              <img src={imgUrl + data.profilePic} style={{height:"75px", width:"100px"}} />
                             </td>
-                            <td>{data.email}</td>
-                            <td>{data.mobileNumber}</td>
+                            {/* <td>{data.email}</td> */}
+                            <td>{data.phone}</td>
                             {/* <td>{data.coins}</td> */}
                             <td className="text-danger "><b>Blocked</b></td>
                             <td>

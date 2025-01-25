@@ -27,7 +27,7 @@ import axios from "axios"
 import { Link, useHistory } from "react-router-dom"
 import ReactPaginate from "react-paginate"
 import toast, { Toaster } from "react-hot-toast"
-import { addData } from "Servicescalls"
+import { addData, updateData } from "Servicescalls"
 import { imgUrl } from "Baseurls"
 // import barcode from "../../assets/images/letast/barcode.jpg"
 // import Barcode from "react-barcode";
@@ -45,28 +45,22 @@ const Ticketrise = () => {
     },
   ])
   const [modal, setmodal] = useState(false)
+  const [modal1, setmodal1] = useState(false)
 
   // get all
   const getAlldata = async () => {
-    const bodydata = {
-      status: "requested",
-    }
-    const resonse = await addData("getalluserwithdraws", bodydata)
+    const resonse = await addData("support/getallusersupports")
     var _data = resonse
-    setAgents(_data?.data?.userWithdrawrequests)
+    setAgents(_data?.data?.data)
   }
 
   // search fuctions
   const Searchfunction = async e => {
-    const bodydata = {
-      status: "requested",
-    }
     const resonse = await addData(
-      "getalluserwithdraws?searchQuery=" + e.target.value,
-      bodydata
+      "support/getallusersupports?searchQuery=" + e.target.value
     )
     var _data = resonse
-    setAgents(_data?.data?.userWithdrawrequests)
+    setAgents(_data?.data?.data)
   }
 
   useEffect(() => {
@@ -91,6 +85,7 @@ const Ticketrise = () => {
 
   const [form, setform] = useState({ fromDate: "", toDate: "" })
   const [form1, setform1] = useState([])
+  const [form2, setform2] = useState([])
 
   const handleChange = e => {
     const myData = { ...form }
@@ -103,36 +98,25 @@ const Ticketrise = () => {
     setform1(myData)
   }
 
-  const filterSubmit = async e => {
-    e.preventDefault()
-    const bodydata = {
-      status: "requested",
-      fromDate: form.fromDate,
-      toDate: form.toDate,
-    }
-    const resonse = await addData("getalluserwithdraws", bodydata)
-    var _data = resonse
-    setAgents(_data?.data?.userWithdrawrequests)
-    setform({ fromDate: "", toDate: "" })
-    popup()
-  }
 
   const modalopen = data => {
     setform1(data)
     setmodal(true)
+  }
+  const modalopen1 = data => {
+    setform2(data)
+    setmodal1(true)
   }
 
   const handleSubmitform = async e => {
     e.preventDefault()
     const bodydata = {
       status: form1.status,
-      transactionId: form1.transactionId || "",
-      description: form1.description || "",
-      rejectedReason: form1.rejectedReason || "",
+      reply: form1.reply || "",
     }
     try {
-      const resonse = await addData(
-        "updatewithdrawrequest/" + form1._id,
+      const resonse = await updateData(
+        "support/updateusersupport/" + form1._id,
         bodydata
       )
       var _data = resonse
@@ -155,14 +139,14 @@ const Ticketrise = () => {
 
   return (
     <React.Fragment>
-      <div className="page-content">
+      <div className="page-content">    
         <div className="container-fluid">
           <Breadcrumbs title="Shicar" breadcrumbItem="Ticketrise" />
           {/* {permissioins.customerView === true || roles === "admin" ? ( */}
 
           <Row>
             <Col>
-              {filter ? (
+              {/* {filter ? (
                 <Card>
                   <CardBody>
                     <Form
@@ -217,13 +201,12 @@ const Ticketrise = () => {
                 </Card>
               ) : (
                 ""
-              )}
-
+              )}    */}
               <Card>
                 <CardBody>
                   <Row>
                     <Col>
-                      <Button
+                      {/* <Button
                         onClick={() => {
                           popup()
                         }}
@@ -240,7 +223,7 @@ const Ticketrise = () => {
                         className="m-2"
                       >
                         Reset <i className="bx bx-reset"></i>
-                      </Button>
+                      </Button> */}
                     </Col>
                     <Col>
                       <div className="mt-2" style={{ float: "right" }}>
@@ -261,8 +244,10 @@ const Ticketrise = () => {
                         <tr>
                           <th>Sl No</th>
                           <th>Date & Time</th>
+                          <th>Ticket Id</th>
                           <th>Name</th>
                           <th>Description</th>
+                          <th>Reply</th>
                           <th>Status</th>
                           <th>Action</th>
                         </tr>
@@ -278,20 +263,31 @@ const Ticketrise = () => {
                           <>
                             {lists.map((data, key) => (
                               <tr key={key}>
-                                <td> {(pageNumber - 1) * 5 + key + 6}</td>
+                                <td> {(pageNumber - 1) * 10 + key + 11}</td>
                                 <td>
                                   {data.date}, {data.time}
                                 </td>
+                                <td># {data.ticketId}</td>
                                 <td>{data.userName}</td>
                                 <td>
-                                  I'm having trouble with automatic withdrawals.
+                                 {data.description}
                                 </td>
-                                <td className="text-warning">Requested</td>
+                                <td>
+                                  {data.status == "solved"?(
+                                 <Button 
+                                 onClick={() => {
+                                  modalopen1(data)
+                                 }}
+                                 size="sm" outline color="info">View</Button>
+                                  ):""}
+                                </td>
+                                <td className={data.status == "solved"?"text-success":"text-warning"}>{data.status}</td>
                                 <td>
                                   <Button
                                     onClick={() => {
                                       modalopen(data)
                                     }}
+                                    disabled={data.status == "solved"}
                                     size="sm"
                                     className="m-1"
                                     outline
@@ -303,7 +299,7 @@ const Ticketrise = () => {
                                     ></i>{" "}
                                     Update
                                   </Button>
-                                 <Link to="/chat"> <Button
+                                 {/* <Link to="/chat"> <Button
                                   
                                     size="sm"
                                     className="m-1"
@@ -315,7 +311,7 @@ const Ticketrise = () => {
                                       className="bx bx-chat"
                                     ></i>{" "}
                                     Chat
-                                  </Button></Link>
+                                  </Button></Link> */}
                                 </td>
                               </tr>
                             ))}
@@ -347,6 +343,7 @@ const Ticketrise = () => {
               </Card>
             </Col>
           </Row>
+
         </div>
         <Toaster />
         <Modal
@@ -395,29 +392,27 @@ const Ticketrise = () => {
                   className="form-select"
                 >
                   <option value="">Select Status</option>
-                  <option value="requested">Requested</option>
+                  <option value="pending">Pending</option>
                   <option value="solved">Solved</option>
-                  <option value="rejected">Rejected</option>
                 </select>
               </div>
-              {/* <div className="mb-3">
+              <div className="mb-3">
                   <Label for="basicpill-firstname-input1">
-                    Reason <span className="text-danger">*</span>
+                    Description <span className="text-danger">*</span>
                   </Label>
                   <textarea
                     type="text"
                     className="form-control"
                     id="basicpill-firstname-input1"
-                    placeholder="Enter Reason"
+                    placeholder="Enter Description"
                     required
-                    name="rejectedReason"
-                    value={form1.rejectedReason}
+                    name="reply"
+                    value={form1.reply}
                     onChange={e => {
                       handleChange1(e)
                     }}
                   />
-                </div> */}
-
+              </div>
               <div style={{ float: "right" }}>
                 <Button className="m-1" color="success" type="submit">
                   Submit <i className="fas fa-check-circle"></i>
@@ -432,7 +427,46 @@ const Ticketrise = () => {
                   Cancel <i className="fas fa-times-circle"></i>
                 </Button>
               </div>
+
             </Form>
+          </div>
+        </Modal>
+        <Modal
+          isOpen={modal1}
+          role="dialog"
+          // size="sm"
+          autoFocus={true}
+          centered
+          data-toggle="modal"
+          toggle={() => {
+            setmodal1(!modal1)
+          }}
+        >
+          <div className="modal-header">
+            <h5 className="modal-title mt-0" id="mySmallModalLabel">
+             Info
+            </h5>
+            <button
+              onClick={() => {
+                setmodal1(!modal1)
+              }}
+              type="button"
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+          <div>
+          <b>User Message: </b>
+          <p>{form2.description}</p>
+          </div>
+          <div>
+          <b>Given Reply: </b>
+          <p>{form2.reply}</p>
+          </div>
           </div>
         </Modal>
       </div>

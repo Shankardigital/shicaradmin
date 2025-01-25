@@ -66,7 +66,7 @@ const Dashboard = props => {
     var _data = resonse
     setform(_data.data)
     setgraph(_data?.data?.monthlyUsers)
-    setgraph1(_data?.data?.monthlyRedemPoints)
+    setgraph1(_data?.data?.montlyRides)
     setcustomers(_data?.data?.latestUsers)
   }
   // const getAlldata1 = async () => {
@@ -80,17 +80,25 @@ const Dashboard = props => {
     // getAlldata1()
   }, [])
 
-  const reports = [
-    { title: "Total Users", iconClass: "bx bx-user-circle", description: form.totalUsers },
-    { title: "Total Completed Rides", iconClass: "bx bx-building-house", description: form.totalCompanyProducts },
-    // {title: "Total Radeem Products",iconClass: "bx bx-store-alt",description: form.totalredemProducts},
-    // {title: "Total Coin Transactions",iconClass: "bx bx-git-repo-forked",description: form.totalRedemPoints},
-    { title: "Today Users", iconClass: "bx bx-user-check", description: form.todayUsers },
-    { title: "Today Completed Rides", iconClass: "bx bx-buildings", description: form.todayCompanyProducts },
-    // {title: "Today Radeem Products",iconClass: "bx bx-notepad",description: form.todayRedemProducts},
-    // {title: "Today Coin Transactions",iconClass: "bx bx-git-merge",description: form.todayRedemPoints},
-  ]
+ 
+    const reports = [
+      {
+        title: "Users",
+        iconClass: "bx bx-user-circle",
+        today: form.todayUsers,
+        total: form.totalUsers,
+      },
+      {
+        title: "Pending Rides",
+        iconClass: "bx bx-car",
+        today: form.todaypendingRides,
+        total: form.totalpendingRides,
+      },
+      { title: "Completed Rides", iconClass: "bx bx-check-circle", today: form.todaycompletedRides, total: form.totalcompletedRides },
+      { title: "Cancelled Rides", iconClass: "bx bx-x-circle", today: form.todaycancelledRides, total: form.totalcancelledRides },
+    ]
 
+  
   // useEffect(() => {
   //   setTimeout(() => {
   //     setSubscribemodal(true);
@@ -143,13 +151,13 @@ const Dashboard = props => {
       legend: {
         show: false,
       },
-      colors: ["#008955", "#74788d"],
+      colors: ["#0b1a31", "#fbab31"],
       fill: {
         type: "gradient",
         gradient: {
           shade: "dark",
           inverseColors: false,
-          gradientToColors: [props.primary, "#74788d"],
+          gradientToColors: [props.primary, "#fbab31"],
           shadeIntensity: 1,
           type: "horizontal",
           opacityFrom: 1,
@@ -222,21 +230,20 @@ const Dashboard = props => {
       },
     ]
 
-    const getByfunction = (data) => {
-      sessionStorage.setItem("userdata", data._id)
-      history.push("/users_details")
-    }
+  const getByfunction = data => {
+    sessionStorage.setItem("userdataid", data._id)
+    history.push("/users_details")
+  }
 
-    const [listPerPage] = useState(5)
-    const [pageNumber, setPageNumber] = useState(0)
-  
-    const pagesVisited = pageNumber * listPerPage
-    const lists = customers.slice(pagesVisited, pagesVisited + listPerPage)
-    const pageCount = Math.ceil(customers.length / listPerPage)
-    const changePage = ({ selected }) => {
-      setPageNumber(selected)
-    }
-  
+  const [listPerPage] = useState(5)
+  const [pageNumber, setPageNumber] = useState(0)
+
+  const pagesVisited = pageNumber * listPerPage
+  const lists = customers.slice(pagesVisited, pagesVisited + listPerPage)
+  const pageCount = Math.ceil(customers.length / listPerPage)
+  const changePage = ({ selected }) => {
+    setPageNumber(selected)
+  }
 
   //meta title
   // document.title="Dashboard | Skote - React Admin & Dashboard Template";
@@ -257,23 +264,40 @@ const Dashboard = props => {
                 {/* Reports Render */}
                 {reports.map((report, key) => (
                   <Col md="3" key={"_col_" + key}>
-                    <Card className="mini-stats-wid">
-                      <CardBody>
-                        <div className="d-flex">
-                          <div className="flex-grow-1">
-                            <p className="text-muted fw-medium">
-                              {report.title}
-                            </p>
-                            <h4 className="mb-0">{report.description}</h4>
+                    <Card
+                      className="mini-stats-wid"
+                      style={{ borderRadius: "10px" }}
+                    >
+                      <CardBody
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "space-between",
+                          padding: "10px 20px 10px 20px",
+                        }}
+                      >
+                        <div className="text-center text-primary">
+                          <i
+                            style={{ fontSize: "30px" }}
+                            className={`bx ${report.iconClass}`}
+                          />
+                          <br />
+                          <b style={{ fontSize: "16px" }}>{report.title}</b>
+                        </div>
+                        <div className="row mt-3">
+                          <div className="col-6">
+                            <span>Today</span> <br />
+                            <span>
+                              <b>{report.today}</b>
+                            </span>{" "}
+                            <br />
                           </div>
-                          <div className="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                            <span className="avatar-title rounded-circle bg-primary">
-                              <i
-                                className={
-                                  "bx " + report.iconClass + " font-size-24"
-                                }
-                              ></i>
-                            </span>
+                          <div className="col-6 text-end">
+                            <span>Total</span> <br />
+                            <span>
+                              <b>{report.total}</b>
+                            </span>{" "}
+                            <br />
                           </div>
                         </div>
                       </CardBody>
@@ -285,10 +309,7 @@ const Dashboard = props => {
               <Card>
                 <CardBody>
                   <div className="clearfix">
-                    <h4 className="card-title mb-4">Monthly Data
-
-
-                    </h4>
+                    <h4 className="card-title mb-4">Monthly Rides & Users</h4>
                   </div>
                   <Row>
                     <Col lg="12">
@@ -310,79 +331,79 @@ const Dashboard = props => {
           <Row>
             <Col lg="12">
               {/* <LatestTranaction /> */}
-            <div>
-              <Card>
-                <CardBody>
-                  <h5 className="mt-3 mb-5">Latest Users</h5>
-                <div className="table-rep-plugin mt-4">
-                    <Table hover bordered responsive>
-                      <thead className="bg-light">
-                        <tr>
-                          <th>Sl No</th>
-                          <th>Date</th>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Mobile No</th>
-                          {/* <th>Coins</th> */}
-                          <th>State</th>
-                          <th>City</th>
-                          <th>Status</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {lists.map((data, key) => (
-                          <tr key={key}>
-                            <th scope="row">
-                              {(pageNumber - 1) * 5 + key + 6}
-                            </th>
-                            {/* <td>{data.customerId}</td> */}
-                            <td>{data.logCreatedDate.slice(0, 10)}</td>
-                            <td>{data.name}</td>
-                            <td>{data.email}</td>
-                            <td>964534543</td>
-                            {/* <td>{data.points}</td> */}
-                            <td>Hyderabad</td>
-                            <td>KPHB colony</td>
-                            <td>{data.status}</td>
-                            <td>
+              <div>
+                <Card>
+                  <CardBody>
+                    <h5 className="mt-3 mb-5">Latest Users</h5>
+                    <div className="table-rep-plugin mt-4">
+                      <Table hover bordered responsive>
+                        <thead className="bg-light">
+                          <tr>
+                            <th>Sl No</th>
+                            <th>Date & Time</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Mobile No</th>
+                            {/* <th>Coins</th> */}
+                         
+                            <th>Status</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {lists.map((data, key) => (
+                            <tr key={key}>
+                              <th scope="row">
+                                {(pageNumber - 1) * 5 + key + 6}
+                              </th>
+                              {/* <td>{data.customerId}</td> */}
+                              <td>{data.logCreatedDate.slice(0, 10)}, {data.logCreatedDate.slice(12, 16)}</td>
+                              <td>{data.name}</td>
+                              <td>{data.email}</td>
+                              <td>{data.phone}</td>
+                              {/* <td>{data.points}</td> */}
+                          
+                              <td>{data.status}</td>
+                              <td>
                                 <Button
                                   size="sm"
                                   className="m-1"
                                   outline
                                   color="primary rounded-pill p-1"
-                                  onClick={()=>{getByfunction(data)}}
+                                  onClick={() => {
+                                    getByfunction(data)
+                                  }}
                                 >
-                                 View Details
+                                  View Details
                                 </Button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </Table>
-                    <Col sm="12">
-                      <div
-                        className="d-flex mt-3 mb-1"
-                        style={{ float: "right" }}
-                      >
-                        <ReactPaginate
-                          previousLabel={"Previous"}
-                          nextLabel={"Next"}
-                          pageCount={pageCount}
-                          onPageChange={changePage}
-                          containerClassName={"pagination"}
-                          previousLinkClassName={"previousBttn"}
-                          nextLinkClassName={"nextBttn"}
-                          disabledClassName={"disabled"}
-                          activeClassName={"active"}
-                          total={lists.length}
-                        />
-                      </div>
-                    </Col>
-                  </div>
-                </CardBody>
-              </Card>
-            </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                      <Col sm="12">
+                        <div
+                          className="d-flex mt-3 mb-1"
+                          style={{ float: "right" }}
+                        >
+                          <ReactPaginate
+                            previousLabel={"Previous"}
+                            nextLabel={"Next"}
+                            pageCount={pageCount}
+                            onPageChange={changePage}
+                            containerClassName={"pagination"}
+                            previousLinkClassName={"previousBttn"}
+                            nextLinkClassName={"nextBttn"}
+                            disabledClassName={"disabled"}
+                            activeClassName={"active"}
+                            total={lists.length}
+                          />
+                        </div>
+                      </Col>
+                    </div>
+                  </CardBody>
+                </Card>
+              </div>
             </Col>
           </Row>
         </Container>

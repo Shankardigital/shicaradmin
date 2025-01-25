@@ -401,13 +401,22 @@ const UserProfile = () => {
                             </Label>
                             <Input
                               placeholder="Enter Number"
-                              type="number"
+                              type="text"
+                              minLength={10}
                               className="form-control"
                               id="validationCustom01"
                               name="phone"
                               value={form.phone}
+                              // onChange={e => {
+                              //   handleChange1(e)
+                              // }}
                               onChange={e => {
-                                handleChange1(e)
+                                const value = e.target.value
+                                if (value === "" || /^[0-9\b]+$/.test(value)) {
+                                  if (value.length <= 10) {
+                                    handleChange1(e)
+                                  }
+                                }
                               }}
                             />
                           </Col>
@@ -431,6 +440,7 @@ const UserProfile = () => {
                               Address <span className="text-danger">*</span>
                             </Label>
                             <textarea
+                            required
                               placeholder="Enter Address"
                               type="text"
                               className="form-control"

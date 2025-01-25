@@ -33,33 +33,30 @@ import { imgUrl } from "Baseurls"
 // import Barcode from "react-barcode";
 
 const Users = () => {
-
   const history = useHistory()
   const [agents, setAgents] = useState([])
 
   // get all
   const getAllAgents = async () => {
-    const bodydata={
-      userStatus:"approved"
+    const bodydata = {
+      rideStatus: "completed",
     }
-    const resonse = await addData("user/getallusers", bodydata)
+    const resonse = await addData("rides/getRidesByStatus", bodydata)
     var _data = resonse
-    setAgents(_data?.data?.user)
+    setAgents(_data?.data?.rides)
   }
 
   // search fuctions
   const agentSearch = async e => {
-    const bodydata={
-      userStatus:"approved"
+    const bodydata = {
+      rideStatus: "completed",
     }
-    const resonse = await addData("user/getallusers?searchQuery=" + e.target.value, bodydata)
+    const resonse = await addData(
+      "rides/getRidesByStatus?searchQuery=" + e.target.value,
+      bodydata
+    )
     var _data = resonse
-    setAgents(_data?.data?.user)
-  }
-
-  const getByfunction = (data) => {
-    sessionStorage.setItem("userdataid", data._id)
-    history.push("/ridedetails")
+    setAgents(_data?.data?.rides)
   }
 
   useEffect(() => {
@@ -75,7 +72,10 @@ const Users = () => {
   const changePage = ({ selected }) => {
     setPageNumber(selected)
   }
-
+  const redirectBooking = data => {
+    sessionStorage.setItem("rideid", data._id)
+    history.push("/ridedetails")
+  }
 
   return (
     <React.Fragment>
@@ -117,12 +117,11 @@ const Users = () => {
                       <thead>
                         <tr>
                           <th>Sl No</th>
-                          <th>Date</th>
+                          <th>Date & Time</th>
                           <th>Pick Up</th>
                           <th>Drop Off</th>
-                          <th>Vehicle Name</th>
-                          <th>Vehicle No</th>
-                          <th>Vehicle Image</th>
+                          <th>Published User</th>
+                          <th>Mobile</th>
                           <th>Status</th>
                           <th>Action</th>
                         </tr>
@@ -130,50 +129,30 @@ const Users = () => {
                       <tbody>
                         {lists.length == 0 ? (
                           <tr>
-                            <th colSpan="8">
+                            <th colSpan="9">
                               <h5 className="text-center">No Data...</h5>
                             </th>
                           </tr>
                         ) : (
                           <>
                             {lists.map((data, key) => (
-                              <tr key={key}>
-                                <td> {(pageNumber - 1) * 5 + key + 6}</td>
-                                <td>04/10/2024</td>
-                                <td>Hyderabad</td>
-                                <td>Kurnool</td>
-                                <td>Tata Curvv</td>
-                                <td>TS df9 2105</td>
+                              <tr key={key} >
+                                <td>{(pageNumber - 1) * 10 + key + 11}</td>
+                                <td>{data.rideStartDate}<br/>{data.rideStartTime}</td>
+                                <td>{data?.pickupLocation?.address}</td>
+                                <td>{data?.dropoffLocation?.address}</td>
+                                <td>{data.driverName}</td>
+                                <td>{data.driverPhone}</td>
+
+                                <td className="text-success">{data.rideStatus}</td>
                                 <td>
-                                  <img
-                                    src="https://imgd.aeplcdn.com/664x374/n/cw/ec/139651/curvv-exterior-right-front-three-quarter.jpeg?isig=0&q=80"
-                                    style={{ height: "75px", width: "100px" }}
-                                  />
-                                </td>
-                            
-                                <td className="text-success">Completed</td>
-                                <td>
-                                  {/* <Button
-                                onClick={() => {
-                                  popup()
-                                }}
-                                size="sm"
-                                className="m-1"
-                                outline
-                                color="success"
-                              >
-                                <i
-                                  style={{ fontSize: " 14px" }}
-                                  className="bx bx-edit"
-                                ></i>
-                              </Button> */}
                                   <Button
                                     size="sm"
                                     className="m-1"
                                     outline
                                     color="warning"
                                     onClick={() => {
-                                      getByfunction(data)
+                                      redirectBooking(data)
                                     }}
                                   >
                                     <i
@@ -181,23 +160,9 @@ const Users = () => {
                                       className="fa fa-eye"
                                     ></i>
                                   </Button>
-                                  {/* <Button
-                                size="sm"
-                                className="m-1"
-                                outline
-                                color="danger"
-                                onClick={() => {
-                                  popupdel()
-                                }}
-                              >
-                                <i
-                                  style={{ fontSize: " 14px" }}
-                                  className="fas fa-trash-alt"
-                                ></i>
-                              </Button> */}
                                 </td>
                               </tr>
-                            ))}
+                           ))}
                           </>
                         )}
                       </tbody>
@@ -229,9 +194,6 @@ const Users = () => {
         </div>
         <Toaster />
       </div>
-     
-
-
     </React.Fragment>
   )
 }

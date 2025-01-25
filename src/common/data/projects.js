@@ -510,7 +510,7 @@ const options = {
       text: "Week",
     },
   },
-  colors: ["#008955"],
+  colors: ["#0b1a31"],
 }
 
 const series = [

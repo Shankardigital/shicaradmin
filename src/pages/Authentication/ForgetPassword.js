@@ -1,62 +1,71 @@
-import PropTypes from "prop-types";
-import React, {useState} from "react";
-import { Row, Col, Alert, Card, CardBody, Container, FormFeedback, Input, Label, Form } from "reactstrap";
+import PropTypes from "prop-types"
+import React, { useState } from "react"
+import {
+  Row,
+  Col,
+  Alert,
+  Card,
+  CardBody,
+  Container,
+  FormFeedback,
+  Input,
+  Label,
+  Form,
+} from "reactstrap"
 
 //redux
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux"
 
-import { withRouter, Link, useHistory } from "react-router-dom";
+import { withRouter, Link, useHistory } from "react-router-dom"
 
 // Formik Validation
-import * as Yup from "yup";
-import { useFormik } from "formik";
+import * as Yup from "yup"
+import { useFormik } from "formik"
 
 // action
-import { userForgetPassword } from "../../store/actions";
+import { userForgetPassword } from "../../store/actions"
 
 // import images
-import profile from "../../assets/images/profile-img.png";
-import logo from "../../assets/images/logo.png";
-import toast, { Toaster } from 'react-hot-toast';
+import profile from "../../assets/images/profile-img.png"
+import logo from "../../assets/images/logo.png"
+import toast, { Toaster } from "react-hot-toast"
 import { addData } from "Servicescalls"
 
 const ForgetPasswordPage = () => {
   const history = useHistory()
 
   const [form, setform] = useState([])
-  const handleChange = (e) => {
-    let myUser = { ...form };
-    myUser[e.target.name] = e.target.value;
-    setform(myUser);
-};
-
- // Add function
-
- const handleSubmit = async e => {
-  e.preventDefault()
-  const bodydata = {
-    email: form.email,
+  const handleChange = e => {
+    let myUser = { ...form }
+    myUser[e.target.name] = e.target.value
+    setform(myUser)
   }
-  try {
-    const resonse = await addData("auth/sendotp", bodydata)
-    var _data = resonse
-    console.log(_data)
-    toast.success(_data.data.message)
-    sessionStorage.setItem("forgotemail", _data.data.userInfo)
-    history.push("/otp")
 
-  } catch (error) {
-    if (
-      error.response &&
-      error.response.data &&
-      error.response.data.message
-    ) {
-      toast.error(error.response.data.message)
-    } else {
-      // toast.error("An error occurred. Please try again.")
+  // Add function
+  const handleSubmit = async e => {
+    e.preventDefault()
+    const bodydata = {
+      email: form.email,
+    }
+    try {
+      const resonse = await addData("auth/sendotp", bodydata)
+      var _data = resonse
+      console.log(_data)
+      toast.success(_data.data.message)
+      sessionStorage.setItem("forgotemail", _data.data.userInfo)
+      history.push("/otp")
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        toast.error(error.response.data.message)
+      } else {
+        // toast.error("An error occurred. Please try again.")
+      }
     }
   }
-}
 
   return (
     <React.Fragment>
@@ -112,7 +121,10 @@ const ForgetPasswordPage = () => {
 
                     <Form
                       className="form-horizontal"
-                      onSubmit={(e) => {handleSubmit(e)}}>
+                      onSubmit={e => {
+                        handleSubmit(e)
+                      }}
+                    >
                       <div className="mb-3">
                         <Label className="form-label">Email</Label>
                         <Input
@@ -120,7 +132,9 @@ const ForgetPasswordPage = () => {
                           className="form-control"
                           placeholder="Enter email"
                           type="email"
-                          onChange={(e)=>{handleChange(e)}}
+                          onChange={e => {
+                            handleChange(e)
+                          }}
                           // onChange={validation.handleChange}
                           // onBlur={validation.handleBlur}
                           // value={validation.values.email || ""}
@@ -154,21 +168,22 @@ const ForgetPasswordPage = () => {
                   </Link>{" "}
                 </p>
                 <p>
-                  © {new Date().getFullYear()} Shicar. Crafted with 
-                  <i className="mdi mdi-heart text-danger" /> by Digitalraiz Creative Solutions Pvt Ltd.
+                  © {new Date().getFullYear()} Shicar. Crafted with
+                  <i className="mdi mdi-heart text-danger" /> by Digitalraiz
+                  Creative Solutions Pvt Ltd.
                 </p>
               </div>
             </Col>
           </Row>
-          <Toaster/>
+          <Toaster />
         </Container>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
 ForgetPasswordPage.propTypes = {
   history: PropTypes.object,
-};
+}
 
-export default withRouter(ForgetPasswordPage);
+export default withRouter(ForgetPasswordPage)

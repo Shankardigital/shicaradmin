@@ -26,7 +26,7 @@ const ApexRadial = () => {
         },
       },
     },
-    colors: ["#008955"],
+    colors: ["#0b1a31"],
     fill: {
       type: "gradient",
       gradient: {

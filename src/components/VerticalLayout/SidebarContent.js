@@ -212,7 +212,14 @@ const SidebarContent = props => {
               <ul className="sub-menu">
                 {Roles?.userView == true || Roles?.accessAll == true ? (
                   <li>
-                    <Link to="/users">{props.t("Users")}</Link>
+                    <Link to="/requestedusers">{props.t("Requested Users")}</Link>
+                  </li>
+                ) : (
+                  ""
+                )}
+                {Roles?.userView == true || Roles?.accessAll == true ? (
+                  <li>
+                    <Link to="/users">{props.t("Active Users")}</Link>
                   </li>
                 ) : (
                   ""
@@ -223,6 +230,13 @@ const SidebarContent = props => {
                     <Link to="/blockedusers">
                       {props.t("Blocked Users")}
                     </Link>
+                  </li>
+                ) : (
+                  ""
+                )}
+                 {Roles?.userView == true || Roles?.accessAll == true ? (
+                  <li>
+                    <Link to="/rejectedusers">{props.t("Rejected Users")}</Link>
                   </li>
                 ) : (
                   ""
@@ -254,8 +268,8 @@ const SidebarContent = props => {
               <ul className="sub-menu">
                 {Roles?.userView == true || Roles?.accessAll == true ? (
                   <li>
-                    <Link to="/pendingrides">
-                      {props.t("Pending Rides")}
+                    <Link to="/bookedrides">
+                      {props.t("Booked Rides")}
                     </Link>
                   </li>
                 ) : (
@@ -263,13 +277,22 @@ const SidebarContent = props => {
                 )}
                 {Roles?.userView == true || Roles?.accessAll == true ? (
                   <li>
+                    <Link to="/pendingrides">
+                      {props.t("Published Rides")}
+                    </Link>
+                  </li>
+                ) : (
+                  ""
+                )}
+                {/* {Roles?.userView == true || Roles?.accessAll == true ? (
+                  <li>
                     <Link to="/runningrides">
                       {props.t("Running Rides")}
                     </Link>
                   </li>
                 ) : (
                   ""
-                )}
+                )} */}
                 {Roles?.userView == true || Roles?.accessAll == true ? (
                   <li>
                     <Link to="/completedrides">
@@ -314,7 +337,7 @@ const SidebarContent = props => {
                 ) : (
                   ""
                 )}
-                {Roles?.holdrequest == true || Roles?.accessAll == true ? (
+                {/* {Roles?.holdrequest == true || Roles?.accessAll == true ? (
                   <li>
                     <Link to="/holdwithdraws">
                       {props.t("Hold")}
@@ -322,7 +345,7 @@ const SidebarContent = props => {
                   </li>
                 ) : (
                   ""
-                )}
+                )} */}
                 {Roles?.approvedwithdraws == true || Roles?.accessAll == true ? (
                   <li>
                     <Link to="/approvedwithdraws">
@@ -406,13 +429,27 @@ const SidebarContent = props => {
                 ) : (
                   ""
                 )}
+                 {Roles?.accessAll == true ? (
+                  <li>
+                    <Link to="/promocode">{props.t("Coupons")}</Link>
+                  </li>
+                ) : (
+                  ""
+                )}
+                 {Roles?.accessAll == true ? (
+                  <li>
+                    <Link to="/notifications">{props.t("Notifications")}</Link>
+                  </li>
+                ) : (
+                  ""
+                )}
               </ul>
             </li>
             {Roles?.bannerView == true || Roles?.accessAll == true ? (
               <li>
                 <Link to="/ticketrise">
-                <i className="dripicons-ticket"></i> 
-                  <span>{props.t("Ticketrise")}</span>
+                <i className="bx bx-support"></i> 
+                  <span>{props.t("Support")}</span>
                 </Link>
               </li>
             ) : (

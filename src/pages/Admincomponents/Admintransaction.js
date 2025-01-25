@@ -31,17 +31,21 @@ import { addData } from "Servicescalls"
 import { imgUrl } from "Baseurls"
 // import barcode from "../../assets/images/letast/barcode.jpg"
 // import Barcode from "react-barcode";
+import { format } from "date-fns"
+import Flatpickr from "react-flatpickr"
 
 const Admintranscation = () => {
   const history = useHistory()
-  const [agents, setAgents] = useState([{
-    date:"18-10-2024",
-    time:"10:00 AM",
-    userName:"Shanker",
-    userMobileNumber:"4654563354",
-    amount:"100",
-    status:"pending"
-  }])
+  const [agents, setAgents] = useState([
+    {
+      date: "18-10-2024",
+      time: "10:00 AM",
+      userName: "Shanker",
+      userMobileNumber: "4654563354",
+      amount: "100",
+      status: "pending",
+    },
+  ])
   const [modal, setmodal] = useState(false)
 
   // get all
@@ -87,31 +91,37 @@ const Admintranscation = () => {
     setfilter(!filter)
   }
 
-  const [form, setform] = useState({ fromDate: "", toDate: "" })
   const [form1, setform1] = useState([])
-
-  const handleChange = e => {
-    const myData = { ...form }
-    myData[e.target.name] = e.target.value
-    setform(myData)
-  }
   const handleChange1 = e => {
     const myData = { ...form1 }
     myData[e.target.name] = e.target.value
     setform1(myData)
   }
 
+  const [dates, setDates] = useState("")
+  const [dates1, setDates1] = useState("")
+
+  const handleDateChange = async NewDate => {
+    if (NewDate.length === 0) {
+    } else {
+      const date1 = format(new Date(NewDate[0]), "yyyy-MM-dd")
+      const date2 = format(new Date(NewDate[1]), "yyyy-MM-dd")
+      // const newDates = [date1, date2];
+      setDates(date1)
+      setDates1(date2)
+    }
+  }
   const filterSubmit = async e => {
     e.preventDefault()
     const bodydata = {
       status: "requested",
-      fromDate: form.fromDate,
-      toDate: form.toDate,
+      startDate: dates,
+      endDate: dates1,
     }
     const resonse = await addData("getalluserwithdraws", bodydata)
     var _data = resonse
     setAgents(_data?.data?.userWithdrawrequests)
-    setform({ fromDate: "", toDate: "" })
+
     popup()
   }
 
@@ -170,29 +180,22 @@ const Admintranscation = () => {
                     >
                       <Row>
                         <Col md="3">
-                          <Label>From Date</Label>
-                          <Input
-                            type="date"
-                            name="fromDate"
+                          <Label>Date</Label>
+                          <Flatpickr
+                            placeholder="Select date"
+                            className="form-control"
+                            name="date"
                             onChange={e => {
-                              handleChange(e)
+                              handleDateChange(e)
                             }}
-                            value={form.fromDate}
-                            max={new Date().toISOString().split("T")[0]}
+                            options={{
+                              mode: "range",
+                              dateFormat: "d M, Y",
+                              maxDate: new Date(),
+                            }}
                           />
                         </Col>
-                        <Col md="3">
-                          <Label>To Date</Label>
-                          <Input
-                            type="date"
-                            name="toDate"
-                            onChange={e => {
-                              handleChange(e)
-                            }}
-                            value={form.toDate}
-                            max={new Date().toISOString().split("T")[0]}
-                          />
-                        </Col>
+
                         <Col md="3" className="mt-3 pt-1">
                           <Button type="submit" color="success" className="m-2">
                             Submit <i className="bx bx-check-circle" />
@@ -287,7 +290,8 @@ const Admintranscation = () => {
                                 <td>Credit</td>
                                 <td>₹ {data.amount}</td>
                                 <td>
-                                I reduced our commission because the ride is now complete.
+                                  I reduced our commission because the ride is
+                                  now complete.
                                 </td>
                                 {/* <td>
                                   <Button
@@ -451,7 +455,7 @@ const Admintranscation = () => {
               )}
 
               <div style={{ float: "right" }}>
-              <Button className="m-1" color="success" type="submit">
+                <Button className="m-1" color="success" type="submit">
                   Submit <i className="fas fa-check-circle"></i>
                 </Button>
                 <Button
@@ -463,7 +467,6 @@ const Admintranscation = () => {
                 >
                   Cancel <i className="fas fa-times-circle"></i>
                 </Button>
-              
               </div>
             </Form>
           </div>

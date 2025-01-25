@@ -218,7 +218,7 @@ const Banner = () => {
 
   // Search fuction
   const handleSearch = async e => {
-    const resonse = await getAllData(
+    const resonse = await addData(
       "banner/getALL?searchQuery=" + e.target.value
     )
     var _data = resonse
@@ -264,13 +264,13 @@ const Banner = () => {
                       <Col md="12">
                         <div className="mb-3">
                           <Label for="basicpill-firstname-input1">
-                            Name <span className="text-danger">*</span>
+                          Layouts Text <span className="text-danger">*</span>
                           </Label>
                           <Input
                             type="text"
                             className="form-control"
                             id="basicpill-firstname-input1"
-                            placeholder="Enter Name"
+                            placeholder="Enter Layouts Text"
                             required
                             name="name"
                             value={form.name}
@@ -347,7 +347,7 @@ const Banner = () => {
                         <thead>
                           <tr>
                             <th>S No</th>
-                            <th>Name</th>
+                            <th>Layouts Text</th>
                             <th>Image</th>
                             <th>Status</th>
                             <th style={{ width: "100px" }}>Action</th>
@@ -457,13 +457,13 @@ const Banner = () => {
                 <Col md="12">
                   <div className="mb-3">
                     <Label for="basicpill-firstname-input1">
-                      Name <span className="text-danger">*</span>
+                    Layouts Text <span className="text-danger">*</span>
                     </Label>
                     <Input
                       type="text"
                       className="form-control"
                       id="basicpill-firstname-input1"
-                      placeholder="Enter Name"
+                      placeholder="Enter Layouts Text"
                       required
                       name="name"
                       value={form1.name}

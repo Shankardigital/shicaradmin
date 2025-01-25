@@ -46,7 +46,7 @@ const postFakeRegister = data => {
 };
 
 // Login Method
-const postFakeLogin = data => post("http://193.203.160.181:5045/v1/shicar/admin/auth/adminlogin", data);
+const postFakeLogin = data => post("http://193.203.160.181:5284/v1/shicar/admin/auth/adminlogin", data);
 // const postFakeLogin = data => post(url.POST_FAKE_LOGIN, data);
 
 // postForgetPwd

@@ -37,35 +37,30 @@ const Users = () => {
   const [agents, setAgents] = useState([])
 
   // get all
-  // const getAllAgents = async () => {
-  //   const bodydata = {
-  //     userStatus: "requested",
-  //   }
-  //   const resonse = await addData("user/getallusers", bodydata)
-  //   var _data = resonse
-  //   setAgents(_data?.data?.user)
-  // }
+  const getAllAgents = async () => {
+    const bodydata = {
+      rideStatus: "pending",
+    }
+    const resonse = await addData("rides/getRidesByStatus", bodydata)
+    var _data = resonse
+    setAgents(_data?.data?.rides)
+  }
 
   // search fuctions
   const agentSearch = async e => {
     const bodydata = {
-      userStatus: "requested",
+      rideStatus: "pending",
     }
     const resonse = await addData(
-      "user/getallusers?searchQuery=" + e.target.value,
+      "rides/getRidesByStatus?searchQuery=" + e.target.value,
       bodydata
     )
     var _data = resonse
-    setAgents(_data?.data?.user)
-  }
-
-  const getByfunction = (data) => {
-    history.push("/ridedetails")
-    sessionStorage.setItem("userdataid", data._id)
+    setAgents(_data?.data?.rides)
   }
 
   useEffect(() => {
-    // getAllAgents()
+    getAllAgents()
   }, [])
 
   const [listPerPage] = useState(10)
@@ -77,12 +72,16 @@ const Users = () => {
   const changePage = ({ selected }) => {
     setPageNumber(selected)
   }
+  const redirectBooking = data => {
+    sessionStorage.setItem("rideid", data._id)
+    history.push("/ridedetails")
+  }
 
   return (
     <React.Fragment>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs title="Shicar" breadcrumbItem="Pending Rides" />
+          <Breadcrumbs title="Shicar" breadcrumbItem="Published Rides" />
           {/* {permissioins.customerView === true || roles === "admin" ? ( */}
 
           <Row>
@@ -121,15 +120,14 @@ const Users = () => {
                           <th>Date & Time</th>
                           <th>Pick Up</th>
                           <th>Drop Off</th>
-                          <th>Brand</th>
-                          <th>Modal</th>
-                          <th>Vehicle Image</th>
+                          <th>Published User</th>
+                          <th>Mobile</th>
                           <th>Status</th>
                           <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {lists.length !== 0 ? (
+                        {lists.length == 0 ? (
                           <tr>
                             <th colSpan="9">
                               <h5 className="text-center">No Data...</h5>
@@ -137,22 +135,16 @@ const Users = () => {
                           </tr>
                         ) : (
                           <>
-                            {/* {lists.map((data, key) => ( */}
-                              <tr >
-                                <td> 1</td>
-                                <td>04/10/2024, 10:00 PM</td>
-                                <td>Hyderabad</td>
-                                <td>Kurnool</td>
-                                <td>Tata</td>
-                                <td>Tata Curvv</td>
-                                <td>
-                                  <img
-                                    src="https://imgd.aeplcdn.com/664x374/n/cw/ec/139651/curvv-exterior-right-front-three-quarter.jpeg?isig=0&q=80"
-                                    style={{ height: "75px", width: "100px" }}
-                                  />
-                                </td>
-                            
-                                <td className="text-warning">Pending</td>
+                            {lists.map((data, key) => (
+                              <tr key={key} >
+                                <td>{(pageNumber - 1) * 10 + key + 11}</td>
+                                <td>{data.rideStartDate}<br/>{data.rideStartTime}</td>
+                                <td>{data?.pickupLocation?.address}</td>
+                                <td>{data?.dropoffLocation?.address}</td>
+                                <td>{data.driverName}</td>
+                                <td>{data.driverPhone}</td>
+
+                                <td className="text-warning">{data.rideStatus}</td>
                                 <td>
                                   <Button
                                     size="sm"
@@ -160,7 +152,7 @@ const Users = () => {
                                     outline
                                     color="warning"
                                     onClick={() => {
-                                      getByfunction("data")
+                                      redirectBooking(data)
                                     }}
                                   >
                                     <i
@@ -170,7 +162,7 @@ const Users = () => {
                                   </Button>
                                 </td>
                               </tr>
-                            {/* ))} */}
+                           ))}
                           </>
                         )}
                       </tbody>
